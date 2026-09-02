@@ -6,6 +6,7 @@ LITELLM := $(VENV)/bin/litellm
 PIP := $(VENV)/bin/pip
 CONFIG := litellm-config.yaml
 ENV_FILE := .env
+COMPAT_PATH := $(CURDIR)/litellm_compat
 
 HOST ?= 127.0.0.1
 PORT ?= 4000
@@ -47,7 +48,8 @@ $(LITELLM):
 install: $(LITELLM) $(ENV_FILE)
 
 run: install
-	$(LITELLM) --config $(CONFIG) --host $(HOST) --port $(PORT)
+	PYTHONPATH="$(COMPAT_PATH)$${PYTHONPATH:+:$$PYTHONPATH}" \
+		$(LITELLM) --config $(CONFIG) --host $(HOST) --port $(PORT)
 
 keys: $(ENV_FILE)
 	@echo "LITELLM_MASTER_KEY=$(LITELLM_MASTER_KEY)"
